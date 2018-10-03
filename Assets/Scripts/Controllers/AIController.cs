@@ -9,6 +9,9 @@ public class AIController : ActorController
     [SerializeField]
     private Root btRootNode;
 
+    [SerializeField]
+    private float rootTime;
+
     public void MoveAI()
     {
         MoveActor();
@@ -17,14 +20,25 @@ public class AIController : ActorController
     protected override void Start()
     {
         base.Start();
+        AIMoveTest.Instance.onAIMoveIssued += MoveAI;
 
         if (btRootNode != null)
         {
             btRootNode.SetControlledAI(this);
+            InvokeRepeating("ExecuteBT", 0.4F, rootTime);  
         }
+           
+     }
 
-        AIMoveTest.Instance.onAIMoveIssued += MoveAI;
+    private void ExecuteBT()
+    {
+        //print(string.Format("Executed root with result {0}", root.Execute()));
+        if(canMove)
+        btRootNode.Execute();
     }
+
+    
+    
 
     protected override void OnDestroy()
     {

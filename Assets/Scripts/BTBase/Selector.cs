@@ -10,11 +10,22 @@
 
     public override bool Execute()
     {
-        bool result = CheckCondition();
+        bool result = false;
+        int childCount = 0;
 
-        if (result)
+        if (CheckCondition())
         {
-            result = base.Execute();
+            foreach (Node node in children)
+            {
+                result = result || node.Execute();
+
+                childCount += 1;
+
+                if (ShouldBreak(result))
+                {
+                    break;
+                }
+            }
         }
 
         return result;

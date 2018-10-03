@@ -26,7 +26,7 @@ public class PlayerController : ActorController
     // Update is called once per frame
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && canMove)
         {
             MoveActor();
         }

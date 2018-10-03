@@ -5,7 +5,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Collider))]
 public abstract class ActorController : MonoBehaviour
 {
-    protected NavMeshAgent agent;
+    public NavMeshAgent agent;
 
     [SerializeField]
     protected Color baseColor = Color.blue;
@@ -20,14 +20,18 @@ public abstract class ActorController : MonoBehaviour
 
     public bool IsTagged { get; protected set; }
 
+    [SerializeField]
+    private GameController controller;
+    public int puntuacion;
+    public bool canMove = true;
+
     // Use this for initialization
     protected virtual void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         renderer = GetComponent<MeshRenderer>();
-
+        controller = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GameController>();
         SetTagged(false);
-
         onActorTagged += SetTagged;
     }
 
@@ -42,10 +46,13 @@ public abstract class ActorController : MonoBehaviour
     {
         ActorController otherActor = collision.gameObject.GetComponent<ActorController>();
 
-        if (otherActor != null)
-        {
-            print("collided!");
 
+        if (otherActor != null && IsTagged && otherActor.gameObject != controller.lastTaggedplayer)
+        {
+            controller.GetLastTaggedPlayer(gameObject);
+            otherActor.IsTagged = true;
+            otherActor.puntuacion += 1;
+            IsTagged = false;
             otherActor.onActorTagged(true);
             onActorTagged(false);
         }
@@ -64,7 +71,6 @@ public abstract class ActorController : MonoBehaviour
 
         if (renderer)
         {
-            print(string.Format("Changing color to {0}", gameObject.name));
             renderer.material.color = val ? taggedColor : baseColor;
         }
     }

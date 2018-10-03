@@ -9,7 +9,8 @@ public abstract class Composite : Node
 
     public override bool Execute()
     {
-        bool result = MustAllChildrenSucceed;
+        bool result = true;
+        int childCount = 0;
 
         foreach (Node node in children)
         {
